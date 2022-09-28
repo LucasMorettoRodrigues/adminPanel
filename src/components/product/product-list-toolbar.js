@@ -26,7 +26,7 @@ export const ProductListToolbar = (props) => (
         sx={{ m: 1 }}
         variant="h4"
       >
-        Products
+        Produtos
       </Typography>
       <Box sx={{ m: 1 }}>
         <NextLink
@@ -61,7 +61,7 @@ export const ProductListToolbar = (props) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Search product"
+              placeholder="Buscar Produto"
               variant="outlined"
             />
           </Box>

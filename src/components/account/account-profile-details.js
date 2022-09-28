@@ -33,7 +33,6 @@ export const AccountProfileDetails = (props) => {
     >
       <Card>
         <CardHeader
-          subheader="The information can be edited"
           title="Profile"
         />
         <Divider />
@@ -49,8 +48,7 @@ export const AccountProfileDetails = (props) => {
             >
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
+                label="Nome"
                 name="firstName"
                 onChange={handleChange}
                 value={values.firstName}
@@ -64,7 +62,7 @@ export const AccountProfileDetails = (props) => {
             >
               <TextField
                 fullWidth
-                label="Last name"
+                label="Sobrenome"
                 name="lastName"
                 onChange={handleChange}
                 value={values.lastName}
@@ -78,7 +76,7 @@ export const AccountProfileDetails = (props) => {
             >
               <TextField
                 fullWidth
-                label="Email Address"
+                label="Email"
                 name="email"
                 onChange={handleChange}
                 required
@@ -93,7 +91,7 @@ export const AccountProfileDetails = (props) => {
             >
               <TextField
                 fullWidth
-                label="Phone Number"
+                label="Número do Celular"
                 name="phone"
                 onChange={handleChange}
                 type="number"
@@ -115,7 +113,7 @@ export const AccountProfileDetails = (props) => {
             color="primary"
             variant="contained"
           >
-            Save details
+            Salvar Detalhes
           </Button>
         </Box>
       </Card>

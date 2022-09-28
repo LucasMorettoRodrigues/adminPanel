@@ -26,17 +26,8 @@ export const CustomerListToolbar = (props) => (
         sx={{ m: 1 }}
         variant="h4"
       >
-        Customers
+        Clientes
       </Typography>
-      <Box sx={{ m: 1 }}>
-        <Button
-          onClick={() => console.log('oi')}
-          color="primary"
-          variant="contained"
-        >
-          Add Customers
-        </Button>
-      </Box>
     </Box>
     <Box sx={{ mt: 3 }}>
       <Card>
@@ -56,7 +47,7 @@ export const CustomerListToolbar = (props) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Search customer"
+              placeholder="Buscar Cliente"
               variant="outlined"
             />
           </Box>

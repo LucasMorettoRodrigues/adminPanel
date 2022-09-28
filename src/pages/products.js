@@ -49,7 +49,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Products | Material Kit
+          Produtos
         </title>
       </Head>
       <Box
