@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
-import { Avatar, Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
-import { Clock as ClockIcon } from '../../icons/clock';
-import { Download as DownloadIcon } from '../../icons/download';
+import { Avatar, Box, Button, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
+import NextLink from 'next/link';
 
-export const ProductCard = ({ product, ...rest }) => (
+export const ProductCard = ({ product, deleteProduct, ...rest }) => (
   <Card
     sx={{
       display: 'flex',
@@ -32,14 +31,21 @@ export const ProductCard = ({ product, ...rest }) => (
         gutterBottom
         variant="h5"
       >
-        {product.title}
+        {product.productName}
+      </Typography>
+      <Typography
+        align="center"
+        color="textSecondary"
+        variant="body2"
+      >
+        {product.category}
       </Typography>
       <Typography
         align="center"
         color="textPrimary"
         variant="body1"
       >
-        {product.description}
+        R$ {product.price}
       </Typography>
     </CardContent>
     <Box sx={{ flexGrow: 1 }} />
@@ -57,15 +63,16 @@ export const ProductCard = ({ product, ...rest }) => (
             display: 'flex'
           }}
         >
-          <ClockIcon color="action" />
-          <Typography
-            color="textSecondary"
-            display="inline"
-            sx={{ pl: 1 }}
-            variant="body2"
+          <NextLink
+            href={`/products/editProduct/${product.id}`}
+            passHref
           >
-            Updated 2hr ago
-          </Typography>
+            <Button
+              sx={{ p: 0 }}
+            >
+              Editar
+            </Button>
+          </NextLink>
         </Grid>
         <Grid
           item
@@ -74,17 +81,12 @@ export const ProductCard = ({ product, ...rest }) => (
             display: 'flex'
           }}
         >
-          <DownloadIcon color="action" />
-          <Typography
-            color="textSecondary"
-            display="inline"
-            sx={{ pl: 1 }}
-            variant="body2"
+          <Button
+            onClick={() => deleteProduct(product.id)}
+            sx={{ p: 0, color: '#D14343;' }}
           >
-            {product.totalDownloads}
-            {' '}
-            Downloads
-          </Typography>
+            Remover
+          </Button>
         </Grid>
       </Grid>
     </Box>

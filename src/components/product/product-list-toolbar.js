@@ -8,9 +8,8 @@ import {
   SvgIcon,
   Typography
 } from '@mui/material';
-import { Download as DownloadIcon } from '../../icons/download';
+import NextLink from 'next/link';
 import { Search as SearchIcon } from '../../icons/search';
-import { Upload as UploadIcon } from '../../icons/upload';
 
 export const ProductListToolbar = (props) => (
   <Box {...props}>
@@ -30,24 +29,18 @@ export const ProductListToolbar = (props) => (
         Products
       </Typography>
       <Box sx={{ m: 1 }}>
-        <Button
-          startIcon={(<UploadIcon fontSize="small" />)}
-          sx={{ mr: 1 }}
+        <NextLink
+          href="/products/addProduct"
+          passHref
         >
-          Import
-        </Button>
-        <Button
-          startIcon={(<DownloadIcon fontSize="small" />)}
-          sx={{ mr: 1 }}
-        >
-          Export
-        </Button>
-        <Button
-          color="primary"
-          variant="contained"
-        >
-          Add products
-        </Button>
+          <Button
+            href="/products/addProduct"
+            color="primary"
+            variant="contained"
+          >
+            Adicionar Produto
+          </Button>
+        </NextLink>
       </Box>
     </Box>
     <Box sx={{ mt: 3 }}>

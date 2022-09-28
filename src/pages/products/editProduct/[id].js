@@ -1,14 +1,13 @@
 import Head from 'next/head';
 import { Box, Container, Grid, Typography } from '@mui/material';
-import { AccountProfile } from '../components/account/account-profile';
-import { AccountProfileDetails } from '../components/account/account-profile-details';
-import { DashboardLayout } from '../components/dashboard-layout';
+import { DashboardLayout } from '../../../components/dashboard-layout';
+import { ProductDetails } from '../../../components/product/product-details';
 
 const Page = () => (
   <>
     <Head>
       <title>
-        Account | Material Kit
+        Editar Produto | Material Kit
       </title>
     </Head>
     <Box
@@ -18,12 +17,12 @@ const Page = () => (
         py: 8
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth={false}>
         <Typography
-          sx={{ mb: 3 }}
+          sx={{ m: 1 }}
           variant="h4"
         >
-          Account
+          Editar Produto
         </Typography>
         <Grid
           container
@@ -35,7 +34,7 @@ const Page = () => (
             md={12}
             xs={12}
           >
-            <AccountProfileDetails />
+            <ProductDetails />
           </Grid>
         </Grid>
       </Container>
