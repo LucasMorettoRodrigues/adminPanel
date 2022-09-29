@@ -1,59 +1,51 @@
-import { useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  TextField
-} from '@mui/material';
-import axios from 'axios'
-import { v4 as uuid } from 'uuid';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
+import { Box, Button, Card, CardContent, Divider, Grid, TextField } from "@mui/material";
+import axios from "axios";
+import { v4 as uuid } from "uuid";
+import { useRouter } from "next/router";
+import { productsService } from "../../services/productsService";
 
 const categories = [
   {
-    value: 'roupa',
-    label: 'Roupa'
+    value: "roupa",
+    label: "Roupa",
   },
   {
-    value: 'calçado',
-    label: 'Calçado'
+    value: "calçado",
+    label: "Calçado",
   },
   {
-    value: 'acessório',
-    label: 'Acessório'
-  }
+    value: "acessório",
+    label: "Acessório",
+  },
 ];
 
 export const ProductDetails = (props) => {
-  const router = useRouter()
-  const { id } = router.query
+  const router = useRouter();
+  const { id } = router.query;
+  const service = new productsService();
 
-  const [isFetchingProduct, setIsFetchingProduct] = useState(id ? true : false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isCreated, setIsCreated] = useState(false)
-  const [error, setError] = useState(false)
-  const [dataError, setDataError] = useState('')
+  const [isFetchingProduct, setIsFetchingProduct] = useState(id ? true : false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
+  const [error, setError] = useState(false);
+  const [dataError, setDataError] = useState("");
 
   const [values, setValues] = useState({
-    productName: '',
-    price: '',
-    description: '',
-    stockQuantity: '',
-    category: '',
+    productName: "",
+    price: "",
+    description: "",
+    stockQuantity: "",
+    category: "",
   });
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios
-          .get(`https://ecommerce-87e77-default-rtdb.firebaseio.com/products/${id}.json`)
-
+        const response = await service.getProduct(id);
         if (!response.data) {
-          setDataError('O produto não existe.')
-          return
+          setDataError("O produto não existe.");
+          return;
         }
 
         setValues({
@@ -61,73 +53,60 @@ export const ProductDetails = (props) => {
           price: response.data.price,
           description: response.data.description,
           stockQuantity: response.data.stockQuantity,
-          category: response.data.category
-        })
+          category: response.data.category,
+        });
       } catch (error) {
-        setDataError('Desculpe, houve um erro no servidor.')
-        console.log(error)
+        setDataError("Desculpe, houve um erro no servidor.");
+        console.log(error);
       } finally {
-        setIsFetchingProduct(false)
+        setIsFetchingProduct(false);
       }
-    }
+    };
 
-    !!id && fetchProduct()
-  }, [id])
+    !!id && fetchProduct();
+  }, [id]);
 
   const handleChange = (event) => {
     setValues({
       ...values,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
   const updateOrAddProduct = async () => {
-    setIsLoading(true)
-    setIsCreated(false)
-    setError(false)
+    setIsLoading(true);
+    setIsCreated(false);
+    setError(false);
 
     try {
       if (!id) {
-        id = uuid()
+        id = uuid();
       }
 
-      await axios.put(`https://ecommerce-87e77-default-rtdb.firebaseio.com/products/${id}.json`, {
-        ...values, id: id
-      })
+      await service.put(id, { ...values, id });
 
-      setIsCreated(true)
+      setIsCreated(true);
     } catch (error) {
-      setError(true)
+      setError(true);
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   if (isFetchingProduct) {
-    return <>Aguarde...</>
+    return <>Aguarde...</>;
   }
 
   if (dataError) {
-    return <p>{dataError}</p>
+    return <p>{dataError}</p>;
   }
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      {...props}
-    >
+    <form autoComplete="off" noValidate {...props}>
       <Card>
         <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={12}
-              xs={12}
-            >
+          <Grid container spacing={3}>
+            <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
                 label="Nome do Produto"
@@ -138,11 +117,7 @@ export const ProductDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={12}
-              xs={12}
-            >
+            <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
                 label="Preço do Produto"
@@ -153,11 +128,7 @@ export const ProductDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={12}
-              xs={12}
-            >
+            <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
                 label="Descrição do Produto"
@@ -168,11 +139,7 @@ export const ProductDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={12}
-              xs={12}
-            >
+            <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
                 label="Quantidade em estoque"
@@ -183,11 +150,7 @@ export const ProductDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={12}
-              xs={12}
-            >
+            <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
                 label="Seleciona a Categoria"
@@ -200,10 +163,7 @@ export const ProductDetails = (props) => {
                 variant="outlined"
               >
                 {categories.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
+                  <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
@@ -212,35 +172,35 @@ export const ProductDetails = (props) => {
           </Grid>
         </CardContent>
         <Divider />
-        {error && !isCreated &&
+        {error && !isCreated && (
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginBottom: '-15px',
-              p: 1
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "-15px",
+              p: 1,
             }}
           >
-            <p style={{ color: 'red' }}>Desculpe, não foi possivel adicionar o produto.</p>
+            <p style={{ color: "red" }}>Desculpe, não foi possivel adicionar o produto.</p>
           </Box>
-        }
-        {isCreated &&
+        )}
+        {isCreated && (
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginBottom: '-15px',
-              p: 1
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "-15px",
+              p: 1,
             }}
           >
-            <p style={{ color: 'green' }}>O produto foi adicionado com sucesso.</p>
+            <p style={{ color: "green" }}>O produto foi adicionado com sucesso.</p>
           </Box>
-        }
+        )}
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
+            display: "flex",
+            justifyContent: "flex-end",
+            p: 2,
           }}
         >
           <Button
@@ -249,7 +209,7 @@ export const ProductDetails = (props) => {
             color="primary"
             variant="contained"
           >
-            {isLoading ? 'Aguarde...' : 'Salvar'}
+            {isLoading ? "Aguarde..." : "Salvar"}
           </Button>
         </Box>
       </Card>
