@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Card, CardContent, Divider, Grid, TextField } from "@mui/material";
-import axios from "axios";
-import { v4 as uuid } from "uuid";
 import { useRouter } from "next/router";
 import { productsService } from "../../services/productsService";
+import { useSetRecoilState } from "recoil";
+import { alertState } from "../../atoms/alertState";
+import { v4 as uuid } from "uuid";
 
 const categories = [
   {
@@ -24,12 +25,11 @@ export const ProductDetails = (props) => {
   const router = useRouter();
   const { id } = router.query;
   const service = new productsService();
+  const setAlert = useSetRecoilState(alertState);
 
   const [isFetchingProduct, setIsFetchingProduct] = useState(id ? true : false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isCreated, setIsCreated] = useState(false);
-  const [error, setError] = useState(false);
-  const [dataError, setDataError] = useState("");
+  const [error, setError] = useState("");
 
   const [values, setValues] = useState({
     productName: "",
@@ -44,7 +44,7 @@ export const ProductDetails = (props) => {
       try {
         const response = await service.getProduct(id);
         if (!response.data) {
-          setDataError("O produto não existe.");
+          setError("O produto não foi encontrado.");
           return;
         }
 
@@ -56,8 +56,8 @@ export const ProductDetails = (props) => {
           category: response.data.category,
         });
       } catch (error) {
-        setDataError("Desculpe, houve um erro no servidor.");
-        console.log(error);
+        setAlert({ message: "Não foi possível conectar com o servidor.", severity: "error" });
+        console.error(error);
       } finally {
         setIsFetchingProduct(false);
       }
@@ -75,19 +75,24 @@ export const ProductDetails = (props) => {
 
   const updateOrAddProduct = async () => {
     setIsLoading(true);
-    setIsCreated(false);
-    setError(false);
+
+    let action = "editar";
 
     try {
       if (!id) {
+        action = "adicionar";
         id = uuid();
       }
-
       await service.put(id, { ...values, id });
-
-      setIsCreated(true);
+      setAlert({
+        message: `O produto foi ${action === "editar" ? "editado" : "adicionado"} com sucesso.`,
+        severity: "success",
+      });
     } catch (error) {
-      setError(true);
+      setAlert({
+        message: `Não foi possível ${action === "editar" ? "editar" : "adicionar"} o produto.`,
+        severity: "error",
+      });
     }
 
     setIsLoading(false);
@@ -97,8 +102,8 @@ export const ProductDetails = (props) => {
     return <>Aguarde...</>;
   }
 
-  if (dataError) {
-    return <p>{dataError}</p>;
+  if (error) {
+    return <p>{error}</p>;
   }
 
   return (
@@ -172,30 +177,6 @@ export const ProductDetails = (props) => {
           </Grid>
         </CardContent>
         <Divider />
-        {error && !isCreated && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginBottom: "-15px",
-              p: 1,
-            }}
-          >
-            <p style={{ color: "red" }}>Desculpe, não foi possivel adicionar o produto.</p>
-          </Box>
-        )}
-        {isCreated && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginBottom: "-15px",
-              p: 1,
-            }}
-          >
-            <p style={{ color: "green" }}>O produto foi adicionado com sucesso.</p>
-          </Box>
-        )}
         <Box
           sx={{
             display: "flex",

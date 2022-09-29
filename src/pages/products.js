@@ -4,22 +4,26 @@ import { ProductListToolbar } from "../components/product/product-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { ListProducts } from "../components/product/list-products";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { productsService } from "../services/productsService";
+import { useSetRecoilState } from "recoil";
+import { alertState } from "../atoms/alertState";
 
 const Page = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [message, setMessage] = useState("");
   const service = new productsService();
+  const setAlert = useSetRecoilState(alertState);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await service.getAll();
-        setProducts(Object.values(response.data));
+        if (response.status === 200 && response.data) {
+          setProducts(Object.values(response.data));
+        }
       } catch (error) {
-        console.log(error);
+        console.error(error);
+        setAlert({ message: "Não foi possível conectar com o servidor.", severity: "error" });
       } finally {
         setIsLoading(false);
       }
@@ -29,16 +33,17 @@ const Page = () => {
   }, []);
 
   const deleteProduct = async (id) => {
-    setMessage("");
     setIsLoading(true);
 
     try {
-      const response = await service.remove(id);
+      const response = await service.delete(id);
       if (response.status === 200) {
         setProducts(products.filter((product) => product.id !== id));
+        setAlert({ message: "Produto removido com sucesso.", severity: "success" });
       }
     } catch (error) {
-      setMessage("Não foi possivel remover o produto.");
+      console.error(error);
+      setAlert({ message: "Não foi possível remover o produto.", severity: "error" });
     }
 
     setIsLoading(false);
@@ -58,7 +63,6 @@ const Page = () => {
       >
         <Container maxWidth={false}>
           <ProductListToolbar />
-          {message && <p style={{ color: "red", marginTop: "20px" }}>{message}</p>}
           {isLoading && <p style={{ marginTop: "20px" }}>Aguarde...</p>}
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={3}>

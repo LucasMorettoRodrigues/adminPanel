@@ -1,8 +1,10 @@
 import { Alert, Collapse } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { alertState } from "../atoms/alertState";
 
 export const DashBoardAlert = () => {
-  const [alert, setAlert] = useState({ message: "", severity: "error" });
+  const alert = useRecoilValue(alertState);
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ export const DashBoardAlert = () => {
       }}
     >
       <Collapse orientation="horizontal" in={showAlert}>
-        <Alert variant="filled" severity={alert.severity}>
+        <Alert style={{ whiteSpace: "nowrap" }} variant="filled" severity={alert.severity}>
           {alert.message}
         </Alert>
       </Collapse>
