@@ -1,30 +1,31 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Card, CardContent, Divider, Grid, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Divider,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  TextField,
+} from "@mui/material";
 import { useRouter } from "next/router";
-import { productsService } from "../../services/productsService";
+import { productsService } from "../../services/ProductsService";
 import { useSetRecoilState } from "recoil";
 import { alertState } from "../../atoms/alertState";
 import { v4 as uuid } from "uuid";
 
-const categories = [
-  {
-    value: "roupa",
-    label: "Roupa",
-  },
-  {
-    value: "calçado",
-    label: "Calçado",
-  },
-  {
-    value: "acessório",
-    label: "Acessório",
-  },
-];
+const categories = ["Roupa", "Calçado", "Acessório"];
 
 export const ProductDetails = (props) => {
   const router = useRouter();
   const { id } = router.query;
-  const service = new productsService();
+  const service = new ProductsService();
   const setAlert = useSetRecoilState(alertState);
 
   const [isFetchingProduct, setIsFetchingProduct] = useState(id ? true : false);
@@ -36,7 +37,7 @@ export const ProductDetails = (props) => {
     price: "",
     description: "",
     stockQuantity: "",
-    category: "",
+    categories: [],
   });
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export const ProductDetails = (props) => {
           price: response.data.price,
           description: response.data.description,
           stockQuantity: response.data.stockQuantity,
-          category: response.data.category,
+          categories: response.data.categories,
         });
       } catch (error) {
         setAlert({ message: "Não foi possível conectar com o servidor.", severity: "error" });
@@ -67,6 +68,14 @@ export const ProductDetails = (props) => {
   }, [id]);
 
   const handleChange = (event) => {
+    if (event.name === "categories") {
+      setValues({
+        ...values,
+        categories: typeof event.target.value === "string" ? value.split(",") : event.target.value,
+      });
+      return;
+    }
+
     setValues({
       ...values,
       [event.target.name]: event.target.value,
@@ -89,6 +98,7 @@ export const ProductDetails = (props) => {
         severity: "success",
       });
     } catch (error) {
+      console.error(error);
       setAlert({
         message: `Não foi possível ${action === "editar" ? "editar" : "adicionar"} o produto.`,
         severity: "error",
@@ -156,23 +166,39 @@ export const ProductDetails = (props) => {
               />
             </Grid>
             <Grid item md={12} xs={12}>
-              <TextField
-                fullWidth
-                label="Seleciona a Categoria"
-                name="category"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.category}
-                variant="outlined"
-              >
-                {categories.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
+              <FormControl sx={{ width: "100%" }}>
+                <InputLabel id="categories-input-label">Categorias</InputLabel>
+                <Select
+                  name="categories"
+                  labelId="categories-input-label"
+                  id="categories-input"
+                  multiple
+                  value={values.categories}
+                  onChange={handleChange}
+                  input={<OutlinedInput id="select-multiple-categories" label="Categorias" />}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip key={value} label={value} />
+                      ))}
+                    </Box>
+                  )}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 48 * 4.5 + 8,
+                        width: 250,
+                      },
+                    },
+                  }}
+                >
+                  {categories.map((category) => (
+                    <MenuItem key={category} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </CardContent>

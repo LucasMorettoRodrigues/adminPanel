@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Card,
   CardContent,
   TextField,
@@ -9,10 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Search as SearchIcon } from "../../icons/search";
-import { Upload as UploadIcon } from "../../icons/upload";
-import { Download as DownloadIcon } from "../../icons/download";
 
-export const CustomerListToolbar = (props) => (
+export const CategoryListToolbar = (props) => (
   <Box {...props}>
     <Box
       sx={{
@@ -24,7 +21,7 @@ export const CustomerListToolbar = (props) => (
       }}
     >
       <Typography sx={{ m: 1 }} variant="h4">
-        Clientes
+        Categorias
       </Typography>
     </Box>
     <Box sx={{ mt: 3 }}>

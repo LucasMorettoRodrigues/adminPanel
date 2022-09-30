@@ -1,6 +1,6 @@
 import { Alert, Collapse } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { alertState } from "../atoms/alertState";
 
 export const DashBoardAlert = () => {

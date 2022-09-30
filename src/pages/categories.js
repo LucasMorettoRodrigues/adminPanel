@@ -1,17 +1,17 @@
 import Head from "next/head";
-import { Box, Container, Grid, Pagination } from "@mui/material";
-import { ProductListToolbar } from "../components/product/product-list-toolbar";
+import { Box, Container } from "@mui/material";
+import { CategoryListResults } from "../components/category/category-list-results";
+import { CategoryListToolbar } from "../components/category/category-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
-import { ListProducts } from "../components/product/list-products";
 import { useEffect, useState } from "react";
-import { productsService } from "../services/ProductsService";
 import { useSetRecoilState } from "recoil";
 import { alertState } from "../atoms/alertState";
+import { CategoriesService } from "../services/CategoriesService";
 
 const Page = () => {
-  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const service = new ProductsService();
+  const service = new CategoriesService();
   const setAlert = useSetRecoilState(alertState);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const Page = () => {
       try {
         const response = await service.getAll();
         if (response.status === 200 && response.data) {
-          setProducts(Object.values(response.data));
+          setCategories(Object.values(response.data));
         }
       } catch (error) {
         console.error(error);
@@ -32,18 +32,18 @@ const Page = () => {
     fetchProducts();
   }, []);
 
-  const deleteProduct = async (id) => {
+  const deleteCategory = async (id) => {
     setIsLoading(true);
 
     try {
       const response = await service.delete(id);
       if (response.status === 200) {
-        setProducts(products.filter((product) => product.id !== id));
-        setAlert({ message: "Produto removido com sucesso.", severity: "success" });
+        setCategories(categories.filter((category) => category.id !== id));
+        setAlert({ message: "Categoria removida com sucesso.", severity: "success" });
       }
     } catch (error) {
       console.error(error);
-      setAlert({ message: "Não foi possível remover o produto.", severity: "error" });
+      setAlert({ message: "Não foi possível remover a categoria.", severity: "error" });
     }
 
     setIsLoading(false);
@@ -52,7 +52,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Produtos</title>
+        <title>Categorias</title>
       </Head>
       <Box
         component="main"
@@ -62,21 +62,9 @@ const Page = () => {
         }}
       >
         <Container maxWidth={false}>
-          <ProductListToolbar />
-          {isLoading && <p style={{ marginTop: "20px" }}>Aguarde...</p>}
-          <Box sx={{ pt: 3 }}>
-            <Grid container spacing={3}>
-              {!isLoading && <ListProducts products={products} deleteProduct={deleteProduct} />}
-            </Grid>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              pt: 3,
-            }}
-          >
-            <Pagination color="primary" count={3} size="small" />
+          <CategoryListToolbar />
+          <Box sx={{ mt: 3 }}>
+            <CategoryListResults categories={categories} />
           </Box>
         </Container>
       </Box>
