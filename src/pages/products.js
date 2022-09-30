@@ -4,7 +4,7 @@ import { ProductListToolbar } from "../components/product/product-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { ListProducts } from "../components/product/list-products";
 import { useEffect, useState } from "react";
-import { productsService } from "../services/ProductsService";
+import { ProductsService } from "../services/ProductsService";
 import { useSetRecoilState } from "recoil";
 import { alertState } from "../atoms/alertState";
 
@@ -23,7 +23,7 @@ const Page = () => {
         }
       } catch (error) {
         console.error(error);
-        setAlert({ message: "Não foi possível conectar com o servidor.", severity: "error" });
+        setAlert({ message: "Não foi possível obter os produtos do servidor.", severity: "error" });
       } finally {
         setIsLoading(false);
       }

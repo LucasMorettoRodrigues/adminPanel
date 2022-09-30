@@ -19,11 +19,14 @@ const Page = () => {
       try {
         const response = await service.getAll();
         if (response.status === 200 && response.data) {
-          setCategories(Object.values(response.data));
+          setCategories(response.data);
         }
       } catch (error) {
         console.error(error);
-        setAlert({ message: "Não foi possível conectar com o servidor.", severity: "error" });
+        setAlert({
+          message: "Não foi possível obter as categorias do servidor.",
+          severity: "error",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -63,6 +66,7 @@ const Page = () => {
       >
         <Container maxWidth={false}>
           <CategoryListToolbar />
+          {isLoading && <p style={{ marginTop: "20px" }}>Aguarde...</p>}
           <Box sx={{ mt: 3 }}>
             <CategoryListResults categories={categories} />
           </Box>

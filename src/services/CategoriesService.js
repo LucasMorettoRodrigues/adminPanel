@@ -5,18 +5,18 @@ export class CategoriesService {
   apiUrl = `${BaseApi}/categories`;
 
   async getAll() {
-    return await axios.get(`${apiURL}.json`);
+    return await axios.get(`${this.apiUrl}.json`);
   }
 
   async getProduct(id) {
-    return await axios.get(`${apiURL}/${id}.json`);
+    return await axios.get(`${this.apiUrl}/${id}.json`);
   }
 
   async put(id, product) {
-    return await axios.put(`${apiURL}/${id}.json`, product);
+    return await axios.put(`${this.apiUrl}/${id}.json`, product);
   }
 
   async delete(id) {
-    return await axios.delete(`${apiURL}/${id}.json`);
+    return await axios.delete(`${this.apiUrl}/${id}.json`);
   }
 }
