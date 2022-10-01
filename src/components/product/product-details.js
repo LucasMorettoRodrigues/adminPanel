@@ -15,10 +15,13 @@ import {
   TextField,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { productsService } from "../../services/ProductsService";
+import { ProductsService } from "../../services/ProductsService";
 import { useSetRecoilState } from "recoil";
 import { alertState } from "../../atoms/alertState";
 import { v4 as uuid } from "uuid";
+import { ImageUploader } from "../ImageUploader";
+import { storage } from "../../firebase";
+import { uploadBytes, ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 const categories = ["Roupa", "Calçado", "Acessório"];
 
@@ -31,12 +34,14 @@ export const ProductDetails = (props) => {
   const [isFetchingProduct, setIsFetchingProduct] = useState(id ? true : false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [localImage, setLocalImage] = useState(null);
 
   const [values, setValues] = useState({
     productName: "",
     price: "",
     description: "",
     stockQuantity: "",
+    image: "",
     categories: [],
   });
 
@@ -54,6 +59,7 @@ export const ProductDetails = (props) => {
           price: response.data.price,
           description: response.data.description,
           stockQuantity: response.data.stockQuantity,
+          image: response.data.image,
           categories: response.data.categories,
         });
       } catch (error) {
@@ -66,6 +72,10 @@ export const ProductDetails = (props) => {
 
     !!id && fetchProduct();
   }, [id]);
+
+  const handleImage = async (fileUploaded) => {
+    setLocalImage({ file: fileUploaded, url: URL.createObjectURL(fileUploaded) });
+  };
 
   const handleChange = (event) => {
     if (event.name === "categories") {
@@ -82,6 +92,13 @@ export const ProductDetails = (props) => {
     });
   };
 
+  const uploadImage = async () => {
+    const storageRef = ref(storage, `products/${uuid()}`);
+    let response = await uploadBytesResumable(storageRef, localImage.file);
+    const imageURL = await getDownloadURL(response.ref);
+    return imageURL;
+  };
+
   const updateOrAddProduct = async () => {
     setIsLoading(true);
 
@@ -92,7 +109,10 @@ export const ProductDetails = (props) => {
         action = "adicionar";
         id = uuid();
       }
-      await service.put(id, { ...values, id });
+      const imageURL = await uploadImage();
+      console.log(imageURL);
+
+      await service.put(id, { ...values, id, image: imageURL });
       setAlert({
         message: `O produto foi ${action === "editar" ? "editado" : "adicionado"} com sucesso.`,
         severity: "success",
@@ -199,6 +219,9 @@ export const ProductDetails = (props) => {
                   ))}
                 </Select>
               </FormControl>
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <ImageUploader handleImage={handleImage} image={localImage && localImage.url} />
             </Grid>
           </Grid>
         </CardContent>

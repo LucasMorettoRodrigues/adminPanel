@@ -19,7 +19,7 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
           pb: 3,
         }}
       >
-        <Avatar alt="Product" src={product.media} variant="square" />
+        <Avatar alt={`${product.name} Image`} src={product.image} variant="square" />
       </Box>
       <Typography align="center" color="textPrimary" gutterBottom variant="h5">
         {product.productName}
