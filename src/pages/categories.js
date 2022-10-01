@@ -19,7 +19,7 @@ const Page = () => {
       try {
         const response = await service.getAll();
         if (response.status === 200 && response.data) {
-          setCategories(response.data);
+          setCategories(Object.values(response.data));
         }
       } catch (error) {
         console.error(error);
@@ -68,7 +68,9 @@ const Page = () => {
           <CategoryListToolbar />
           {isLoading && <p style={{ marginTop: "20px" }}>Aguarde...</p>}
           <Box sx={{ mt: 3 }}>
-            <CategoryListResults categories={categories} />
+            {!isLoading && (
+              <CategoryListResults categories={categories} deleteCategory={deleteCategory} />
+            )}
           </Box>
         </Container>
       </Box>

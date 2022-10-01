@@ -8,12 +8,12 @@ export class CategoriesService {
     return await axios.get(`${this.apiUrl}.json`);
   }
 
-  async getProduct(id) {
+  async getCategory(id) {
     return await axios.get(`${this.apiUrl}/${id}.json`);
   }
 
-  async put(id, product) {
-    return await axios.put(`${this.apiUrl}/${id}.json`, product);
+  async put(id, category) {
+    return await axios.put(`${this.apiUrl}/${id}.json`, category);
   }
 
   async delete(id) {

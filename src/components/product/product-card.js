@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Avatar, Box, Button, Card, CardContent, Divider, Grid, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Divider, Grid, Typography } from "@mui/material";
 import NextLink from "next/link";
 
 export const ProductCard = ({ product, deleteProduct, ...rest }) => (
@@ -12,15 +12,13 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
     {...rest}
   >
     <CardContent>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          pb: 3,
-        }}
-      >
-        <Avatar alt={`${product.name} Image`} src={product.image} variant="square" />
-      </Box>
+      <div style={{ height: "180px", textAlign: "center", paddingBottom: "15px" }}>
+        <img
+          style={{ height: "100%", maxWidth: "280px", objectFit: "cover" }}
+          alt={`${product.name} Image`}
+          src={product.image}
+        />
+      </div>
       <Typography align="center" color="textPrimary" gutterBottom variant="h5">
         {product.productName}
       </Typography>

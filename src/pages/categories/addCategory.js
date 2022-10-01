@@ -1,12 +1,12 @@
 import Head from "next/head";
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { DashboardLayout } from "../../components/dashboard-layout";
-import { ProductForm } from "../../components/product/product-form";
+import { CategoryForm } from "../../components/category/category-form";
 
 const Page = () => (
   <>
     <Head>
-      <title>Adicionar Produto | Material Kit</title>
+      <title>Adicionar Categoria</title>
     </Head>
     <Box
       component="main"
@@ -17,11 +17,11 @@ const Page = () => (
     >
       <Container maxWidth={false}>
         <Typography sx={{ m: 1 }} variant="h4">
-          Adicionar Produto
+          Adicionar Categoria
         </Typography>
         <Grid container spacing={3}>
           <Grid item lg={12} md={12} xs={12}>
-            <ProductForm />
+            <CategoryForm />
           </Grid>
         </Grid>
       </Container>

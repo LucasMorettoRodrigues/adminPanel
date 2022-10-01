@@ -16,25 +16,26 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { ProductsService } from "../../services/ProductsService";
+import { CategoriesService } from "../../services/CategoriesService";
 import { useSetRecoilState } from "recoil";
 import { alertState } from "../../atoms/alertState";
 import { v4 as uuid } from "uuid";
 import { ImageUploader } from "../ImageUploader";
 import { storage } from "../../firebase";
-import { uploadBytes, ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
-const categories = ["Roupa", "Calçado", "Acessório"];
-
-export const ProductDetails = (props) => {
+export const ProductForm = (props) => {
   const router = useRouter();
   const { id } = router.query;
-  const service = new ProductsService();
+  const productsService = new ProductsService();
+  const categoriesService = new CategoriesService();
   const setAlert = useSetRecoilState(alertState);
 
   const [isFetchingProduct, setIsFetchingProduct] = useState(id ? true : false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [localImage, setLocalImage] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   const [values, setValues] = useState({
     productName: "",
@@ -48,7 +49,7 @@ export const ProductDetails = (props) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await service.getProduct(id);
+        const response = await productsService.getProduct(id);
         if (!response.data) {
           setError("O produto não foi encontrado.");
           return;
@@ -72,6 +73,21 @@ export const ProductDetails = (props) => {
 
     !!id && fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await categoriesService.getAll();
+        if (response.status === 200 && response.data) {
+          setCategories(Object.values(response.data));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleImage = async (fileUploaded) => {
     setLocalImage({ file: fileUploaded, url: URL.createObjectURL(fileUploaded) });
@@ -110,9 +126,8 @@ export const ProductDetails = (props) => {
         id = uuid();
       }
       const imageURL = await uploadImage();
-      console.log(imageURL);
 
-      await service.put(id, { ...values, id, image: imageURL });
+      await productsService.put(id, { ...values, id, image: imageURL });
       setAlert({
         message: `O produto foi ${action === "editar" ? "editado" : "adicionado"} com sucesso.`,
         severity: "success",
@@ -212,9 +227,9 @@ export const ProductDetails = (props) => {
                     },
                   }}
                 >
-                  {categories.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
+                  {categories.map((item) => (
+                    <MenuItem key={item.id} value={item.category}>
+                      {item.category}
                     </MenuItem>
                   ))}
                 </Select>
