@@ -4,7 +4,6 @@ import { styled } from "@mui/material/styles";
 import { AuthGuard } from "./auth-guard";
 import { DashboardNavbar } from "./dashboard-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
-import { DashBoardAlert } from "./dashboard-alert";
 
 const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
@@ -22,7 +21,6 @@ export const DashboardLayout = (props) => {
 
   return (
     <AuthGuard>
-      <DashBoardAlert />
       <DashboardLayoutRoot>
         <Box
           sx={{

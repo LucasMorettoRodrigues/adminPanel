@@ -9,6 +9,7 @@ import { createEmotionCache } from "../utils/create-emotion-cache";
 import { registerChartJs } from "../utils/register-chart-js";
 import { theme } from "../theme";
 import { RecoilRoot } from "recoil";
+import { DashBoardAlert } from "../components/dashboard-alert";
 
 registerChartJs();
 
@@ -29,6 +30,7 @@ const App = (props) => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <RecoilRoot>
+            <DashBoardAlert />
             {getLayout(<Component {...pageProps} />)}
             {/* -------------- LOGIN REMOVIDO ------------------
             <AuthProvider>

@@ -11,7 +11,7 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
     }}
     {...rest}
   >
-    <CardContent>
+    <CardContent sx={{ pb: 2 }}>
       <div style={{ height: "180px", textAlign: "center", paddingBottom: "15px" }}>
         <img
           style={{ height: "100%", maxWidth: "280px", objectFit: "cover" }}
@@ -22,12 +22,13 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
       <Typography align="center" color="textPrimary" gutterBottom variant="h5">
         {product.productName}
       </Typography>
-      <Typography style={{ margin: "20px" }} align="center" color="textPrimary" variant="body2">
+      <Typography style={{ margin: "12px" }} align="center" color="textPrimary" variant="body2">
         {product.categories?.map((category) => (
           <span
             key={category}
             style={{
-              padding: "8px 16px",
+              fontSize: "12px",
+              padding: "5px 10px",
               backgroundColor: "lightgray",
               borderRadius: "20px",
               margin: "0 5px",
