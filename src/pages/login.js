@@ -25,6 +25,7 @@ const Login = () => {
       signInWithEmailAndPassword(auth, formik.values.email, formik.values.password)
         .then((userCredential) => {
           // Signed in
+          console.log(userCredential);
           const user = userCredential.user;
           Router.push("/").catch(console.error);
         })

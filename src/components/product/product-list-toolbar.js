@@ -39,6 +39,7 @@ export const ProductListToolbar = (props) => (
           <Box sx={{ maxWidth: 500 }}>
             <TextField
               fullWidth
+              onChange={props.handleOnChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

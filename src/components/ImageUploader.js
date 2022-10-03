@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Button } from "@mui/material";
 
 export const ImageUploader = ({ handleImage, image }) => {

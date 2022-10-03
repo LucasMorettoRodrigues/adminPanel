@@ -109,6 +109,7 @@ export const ProductForm = (props) => {
   };
 
   const uploadImage = async () => {
+    if (!localImage) return;
     const storageRef = ref(storage, `products/${uuid()}`);
     let response = await uploadBytesResumable(storageRef, localImage.file);
     const imageURL = await getDownloadURL(response.ref);
@@ -125,9 +126,10 @@ export const ProductForm = (props) => {
         action = "adicionar";
         id = uuid();
       }
+
       const imageURL = await uploadImage();
 
-      await productsService.put(id, { ...values, id, image: imageURL });
+      await productsService.put(id, { ...values, id, image: imageURL || values.image });
       setAlert({
         message: `O produto foi ${action === "editar" ? "editado" : "adicionado"} com sucesso.`,
         severity: "success",
@@ -236,7 +238,10 @@ export const ProductForm = (props) => {
               </FormControl>
             </Grid>
             <Grid item md={12} xs={12}>
-              <ImageUploader handleImage={handleImage} image={localImage && localImage.url} />
+              <ImageUploader
+                handleImage={handleImage}
+                image={localImage ? localImage.url : values.image}
+              />
             </Grid>
           </Grid>
         </CardContent>
