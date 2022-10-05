@@ -20,16 +20,13 @@ export const SettingsPassword = (props) => {
     });
   };
 
-  const handleUpdatePassword = () => {
-    setLoading(true);
-
+  const validatePassword = () => {
     if (values.password.length < 6) {
       setAlert({
         message: "A senha deve conter no mínimo 6 caracteres.",
         severity: "error",
       });
-      setLoading(false);
-      return;
+      return false;
     }
 
     if (values.password !== values.confirm) {
@@ -37,6 +34,18 @@ export const SettingsPassword = (props) => {
         message: "A senha confirmada não é a mesma.",
         severity: "error",
       });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleUpdatePassword = () => {
+    setLoading(true);
+
+    const isValid = validatePassword();
+
+    if (!isValid) {
       setLoading(false);
       return;
     }
@@ -101,7 +110,7 @@ export const SettingsPassword = (props) => {
             onClick={handleUpdatePassword}
             color="primary"
             variant="contained"
-            disbled={loading ? true : false}
+            disabled={loading ? true : false}
           >
             Salvar
           </Button>
