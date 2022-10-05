@@ -43,11 +43,6 @@ const items = [
     icon: <CogIcon fontSize="small" />,
     title: "Configurações",
   },
-  {
-    href: "/login",
-    icon: <LockIcon fontSize="small" />,
-    title: "Login",
-  },
 ];
 
 export const DashboardSidebar = (props) => {
