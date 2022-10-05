@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { useAuthContext } from "../contexts/auth-context";
+import { auth } from "../firebase";
 
 export const AuthGuard = (props) => {
   const { children } = props;
   const router = useRouter();
-  const { isAuthenticated } = useAuthContext();
   const ignore = useRef(false);
   const [checked, setChecked] = useState(false);
 
@@ -26,17 +25,17 @@ export const AuthGuard = (props) => {
 
     ignore.current = true;
 
-    // if (!isAuthenticated) {
-    //   console.log('Not authenticated, redirecting');
-    //   router
-    //     .replace({
-    //       pathname: '/sign-in',
-    //       query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined
-    //     })
-    //     .catch(console.error);
-    // } else {
-    //   setChecked(true);
-    // }
+    if (!auth.currentUser) {
+      console.log("Not authenticated, redirecting");
+      router
+        .replace({
+          pathname: "/login",
+          query: router.asPath !== "/" ? { continueUrl: router.asPath } : undefined,
+        })
+        .catch(console.error);
+    } else {
+      setChecked(true);
+    }
 
     // Login Removido
     setChecked(true);
