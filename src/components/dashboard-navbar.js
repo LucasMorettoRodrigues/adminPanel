@@ -5,7 +5,7 @@ import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Tooltip } from "@mui/m
 import MenuIcon from "@mui/icons-material/Menu";
 import { Bell as BellIcon } from "../icons/bell";
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
-import { Users as UsersIcon } from "../icons/users";
+import { User as UserIcon } from "../icons/user";
 import { AccountPopover } from "./account-popover";
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
@@ -51,11 +51,11 @@ export const DashboardNavbar = (props) => {
             <MenuIcon fontSize="small" />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <Tooltip title="Contacts">
+          {/* <Tooltip title="Contacts">
             <IconButton sx={{ ml: 1 }}>
               <UsersIcon fontSize="small" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Notifications">
             <IconButton sx={{ ml: 1 }}>
               <Badge badgeContent={4} color="primary" variant="dot">
@@ -63,7 +63,12 @@ export const DashboardNavbar = (props) => {
               </Badge>
             </IconButton>
           </Tooltip>
-          <Avatar
+          <Tooltip onClick={() => setOpenAccountPopover(true)} ref={settingsRef} title="user">
+            <IconButton sx={{ ml: 1, backgroundColor: "#F1F1F1 " }}>
+              <UserIcon fontSize="big" />
+            </IconButton>
+          </Tooltip>
+          {/* <Avatar
             onClick={() => setOpenAccountPopover(true)}
             ref={settingsRef}
             sx={{
@@ -75,7 +80,7 @@ export const DashboardNavbar = (props) => {
             src="/static/images/avatars/avatar_1.png"
           >
             <UserCircleIcon fontSize="small" />
-          </Avatar>
+          </Avatar> */}
         </Toolbar>
       </DashboardNavbarRoot>
       <AccountPopover
