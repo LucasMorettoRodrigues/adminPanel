@@ -100,7 +100,7 @@ const Login = () => {
                 Entrar
               </Button>
             </Box>
-            <Typography color="textSecondary" variant="body2">
+            {/* <Typography color="textSecondary" variant="body2">
               Não possue uma conta?{" "}
               <NextLink href="/register">
                 <Link
@@ -114,7 +114,7 @@ const Login = () => {
                   Registrar
                 </Link>
               </NextLink>
-            </Typography>
+            </Typography> */}
           </form>
         </Container>
       </Box>
