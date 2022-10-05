@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { AuthGuard } from "./auth-guard";
 import { DashboardNavbar } from "./dashboard-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
 
@@ -20,7 +19,7 @@ export const DashboardLayout = (props) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <AuthGuard>
+    <>
       <DashboardLayoutRoot>
         <Box
           sx={{
@@ -35,6 +34,6 @@ export const DashboardLayout = (props) => {
       </DashboardLayoutRoot>
       <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} />
       <DashboardSidebar onClose={() => setSidebarOpen(false)} open={isSidebarOpen} />
-    </AuthGuard>
+    </>
   );
 };

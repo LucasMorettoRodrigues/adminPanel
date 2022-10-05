@@ -10,6 +10,8 @@ import { registerChartJs } from "../utils/register-chart-js";
 import { theme } from "../theme";
 import { RecoilRoot } from "recoil";
 import { DashBoardAlert } from "../components/dashboard-alert";
+import { auth } from "../firebase";
+import Login from "./login";
 
 registerChartJs();
 
@@ -31,7 +33,7 @@ const App = (props) => {
           <CssBaseline />
           <RecoilRoot>
             <DashBoardAlert />
-            {getLayout(<Component {...pageProps} />)}
+            {auth.currentUser ? getLayout(<Component {...pageProps} />) : <Login />}
             {/* -------------- LOGIN REMOVIDO ------------------
             <AuthProvider>
               <AuthConsumer>
