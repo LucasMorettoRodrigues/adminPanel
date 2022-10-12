@@ -4,13 +4,11 @@ import {
   Button,
   Card,
   CardContent,
-  Chip,
   Divider,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
-  OutlinedInput,
   Select,
   TextField,
 } from "@mui/material";
@@ -38,12 +36,14 @@ export const ProductForm = (props) => {
   const [categories, setCategories] = useState([]);
 
   const [values, setValues] = useState({
-    productName: "",
+    name: "",
     price: "",
     description: "",
-    stockQuantity: "",
+    stock: "",
     image: "",
-    categories: [],
+    category: "",
+    genre: "",
+    brand: "",
   });
 
   useEffect(() => {
@@ -56,12 +56,14 @@ export const ProductForm = (props) => {
         }
 
         setValues({
-          productName: response.data.productName,
+          name: response.data.name,
           price: response.data.price,
           description: response.data.description,
-          stockQuantity: response.data.stockQuantity,
+          stock: response.data.stock,
           image: response.data.image,
-          categories: response.data.categories,
+          category: response.data.category,
+          genre: response.data.genre,
+          brand: response.data.brand,
         });
       } catch (error) {
         setAlert({ message: "Não foi possível conectar com o servidor.", severity: "error" });
@@ -94,14 +96,6 @@ export const ProductForm = (props) => {
   };
 
   const handleChange = (event) => {
-    if (event.name === "categories") {
-      setValues({
-        ...values,
-        categories: typeof event.target.value === "string" ? value.split(",") : event.target.value,
-      });
-      return;
-    }
-
     setValues({
       ...values,
       [event.target.name]: event.target.value,
@@ -162,21 +156,10 @@ export const ProductForm = (props) => {
               <TextField
                 fullWidth
                 label="Nome do Produto"
-                name="productName"
+                name="name"
                 onChange={handleChange}
                 required
-                value={values.productName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <TextField
-                fullWidth
-                label="Preço do Produto"
-                name="price"
-                onChange={handleChange}
-                required
-                value={values.price}
+                value={values.name}
                 variant="outlined"
               />
             </Grid>
@@ -194,46 +177,69 @@ export const ProductForm = (props) => {
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
-                label="Quantidade em estoque"
-                name="stockQuantity"
+                label="Preço do Produto em Reais"
+                name="price"
                 onChange={handleChange}
                 type="number"
-                value={values.stockQuantity}
+                required
+                value={values.price}
                 variant="outlined"
               />
             </Grid>
             <Grid item md={12} xs={12}>
-              <FormControl sx={{ width: "100%" }}>
-                <InputLabel id="categories-input-label">Categorias</InputLabel>
+              <TextField
+                fullWidth
+                label="Quantidade em Estoque"
+                name="stock"
+                onChange={handleChange}
+                type="number"
+                value={values.stock}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <TextField
+                fullWidth
+                label="Marca do Produto"
+                name="brand"
+                onChange={handleChange}
+                required
+                value={values.brand}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Categoria</InputLabel>
                 <Select
-                  name="categories"
-                  labelId="categories-input-label"
-                  id="categories-input"
-                  multiple
-                  value={values.categories}
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={values.category}
+                  label="Categoria"
+                  name="category"
                   onChange={handleChange}
-                  input={<OutlinedInput id="select-multiple-categories" label="Categorias" />}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip key={value} label={value} />
-                      ))}
-                    </Box>
-                  )}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        maxHeight: 48 * 4.5 + 8,
-                        width: 250,
-                      },
-                    },
-                  }}
                 >
                   {categories.map((item) => (
                     <MenuItem key={item.id} value={item.category}>
-                      {item.category}
+                      {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
                     </MenuItem>
                   ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Genero</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={values.genre}
+                  label="Genero"
+                  name="genre"
+                  onChange={handleChange}
+                >
+                  <MenuItem value="masculino">Masculino</MenuItem>
+                  <MenuItem value="feminino">Feminino</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
