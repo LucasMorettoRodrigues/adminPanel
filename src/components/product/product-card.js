@@ -20,7 +20,7 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
         />
       </div>
       <Typography align="center" color="textPrimary" gutterBottom variant="h5">
-        {product.productName}
+        {product.name}
       </Typography>
       <Typography style={{ margin: "12px" }} align="center" color="textPrimary" variant="body2">
         {product.categories?.map((category) => (
@@ -42,7 +42,7 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
         R$ {product.price}
       </Typography>
       <Typography align="center" color="textSecondary" variant="body2">
-        Em estoque: {product.stockQuantity}
+        Em estoque: {product.stock}
       </Typography>
     </CardContent>
     <Box sx={{ flexGrow: 1 }} />
@@ -67,7 +67,7 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
             display: "flex",
           }}
         >
-          <Button onClick={() => deleteProduct(product.id)} sx={{ p: 0, color: "#D14343;" }}>
+          <Button onClick={() => deleteProduct(product)} sx={{ p: 0, color: "#D14343;" }}>
             Remover
           </Button>
         </Grid>

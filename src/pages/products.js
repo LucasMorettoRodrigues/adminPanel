@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Box, Container, Grid, Pagination } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import { ProductListToolbar } from "../components/product/product-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { ListProducts } from "../components/product/list-products";
@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { ProductsService } from "../services/ProductsService";
 import { useSetRecoilState } from "recoil";
 import { alertState } from "../atoms/alertState";
+import { deleteImagesFromStorage } from "../utils/functions";
 
 const Page = () => {
   const [products, setProducts] = useState([]);
@@ -37,20 +38,22 @@ const Page = () => {
   const searchProducts = (e) => {
     setFilteredProducts(
       products.filter((product) =>
-        product.productName.toLowerCase().includes(e.target.value.toLowerCase())
+        product.name.toLowerCase().includes(e.target.value.toLowerCase())
       )
     );
   };
 
-  const deleteProduct = async (id) => {
+  const deleteProduct = async (productToDelete) => {
     setIsLoading(true);
 
     try {
-      const response = await service.delete(id);
+      const response = await service.delete(productToDelete.id);
       if (response.status === 200) {
-        setProducts(products.filter((product) => product.id !== id));
+        setProducts(products.filter((product) => product.id !== productToDelete.id));
+        setFilteredProducts(products.filter((product) => product.id !== productToDelete.id));
         setAlert({ message: "Produto removido com sucesso.", severity: "success" });
       }
+      deleteImagesFromStorage(productToDelete.images);
     } catch (error) {
       console.error(error);
       setAlert({ message: "Não foi possível remover o produto.", severity: "error" });
@@ -72,7 +75,7 @@ const Page = () => {
         }}
       >
         <Container maxWidth={false}>
-          <ProductListToolbar handleOnChange={searchProducts} />
+          <ProductListToolbar searchProducts={searchProducts} />
           {isLoading && <p style={{ marginTop: "20px" }}>Aguarde...</p>}
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={3}>

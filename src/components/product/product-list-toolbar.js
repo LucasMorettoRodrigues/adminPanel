@@ -11,7 +11,7 @@ import {
 import NextLink from "next/link";
 import { Search as SearchIcon } from "../../icons/search";
 
-export const ProductListToolbar = (props) => (
+export const ProductListToolbar = ({ searchProducts, ...props }) => (
   <Box {...props}>
     <Box
       sx={{
@@ -39,7 +39,7 @@ export const ProductListToolbar = (props) => (
           <Box sx={{ maxWidth: 500 }}>
             <TextField
               fullWidth
-              onChange={props.handleOnChange}
+              onChange={searchProducts}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

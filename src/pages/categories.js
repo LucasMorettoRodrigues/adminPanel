@@ -10,16 +10,18 @@ import { CategoriesService } from "../services/CategoriesService";
 
 const Page = () => {
   const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const service = new CategoriesService();
   const setAlert = useSetRecoilState(alertState);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetch = async () => {
       try {
         const response = await service.getAll();
         if (response.status === 200 && response.data) {
           setCategories(Object.values(response.data));
+          setFilteredCategories(Object.values(response.data));
         }
       } catch (error) {
         console.error(error);
@@ -32,8 +34,16 @@ const Page = () => {
       }
     };
 
-    fetchProducts();
+    fetch();
   }, []);
+
+  const searchCategories = (e) => {
+    setFilteredCategories(
+      categories.filter((category) =>
+        category.category.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    );
+  };
 
   const deleteCategory = async (id) => {
     setIsLoading(true);
@@ -42,6 +52,7 @@ const Page = () => {
       const response = await service.delete(id);
       if (response.status === 200) {
         setCategories(categories.filter((category) => category.id !== id));
+        setFilteredCategories(categories.filter((category) => category.id !== id));
         setAlert({ message: "Categoria removida com sucesso.", severity: "success" });
       }
     } catch (error) {
@@ -65,11 +76,14 @@ const Page = () => {
         }}
       >
         <Container maxWidth={false}>
-          <CategoryListToolbar />
+          <CategoryListToolbar searchCategories={searchCategories} />
           {isLoading && <p style={{ marginTop: "20px" }}>Aguarde...</p>}
           <Box sx={{ mt: 3 }}>
             {!isLoading && (
-              <CategoryListResults categories={categories} deleteCategory={deleteCategory} />
+              <CategoryListResults
+                categories={filteredCategories}
+                deleteCategory={deleteCategory}
+              />
             )}
           </Box>
         </Container>

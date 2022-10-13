@@ -20,8 +20,9 @@ import { ImageUploader } from "../ImageUploader";
 import { storage } from "../../firebase";
 import { ref, getDownloadURL, uploadBytesResumable, deleteObject } from "firebase/storage";
 import { useCategories } from "../../hooks/useCategories";
-import { useProducts } from "../../hooks/useProducts";
+import { useProductForm } from "../../hooks/useProductForm";
 import { useRouter } from "next/router";
+import { deleteImagesFromStorage, uploadImageToStorage } from "../../utils/functions";
 
 export const ProductForm = (props) => {
   const router = useRouter();
@@ -29,30 +30,18 @@ export const ProductForm = (props) => {
   const productsService = new ProductsService();
   const setAlert = useSetRecoilState(alertState);
   const { categories } = useCategories();
-  const { error, isFetchingProducts, values, setValues, handleChange } = useProducts();
+  const { error, isFetchingProducts, values, setValues, handleChange } = useProductForm();
 
   const [isLoading, setIsLoading] = useState(false);
   const [localImages, setLocalImages] = useState([]);
-  const [imagesToDelete, setImagesToDelete] = useState([]);
+  const [storageImagesToDelete, setStorageImagesToDelete] = useState([]);
 
+  // Add local image to localImages
   const handleImage = async (fileUploaded) => {
     setLocalImages((localImage) => [
       ...localImage,
       { file: fileUploaded, url: URL.createObjectURL(fileUploaded) },
     ]);
-  };
-
-  const uploadImage = async () => {
-    const imagesURL = [];
-
-    for (let localImage of localImages) {
-      const storageRef = ref(storage, `products/${uuid()}`);
-      let response = await uploadBytesResumable(storageRef, localImage.file);
-      const imageURL = await getDownloadURL(response.ref);
-      imagesURL.push(imageURL);
-    }
-
-    return imagesURL;
   };
 
   const updateOrAddProduct = async () => {
@@ -66,18 +55,15 @@ export const ProductForm = (props) => {
         id = uuid();
       }
 
-      const imagesURL = await uploadImage();
+      const imagesURL = await uploadImageToStorage(localImages);
 
-      // await productsService.put(id, { ...values, id, image: imageURL || values.image });
       await productsService.put(id, { ...values, id, images: [...values.images, ...imagesURL] });
       setAlert({
         message: `O produto foi ${action === "editar" ? "editado" : "adicionado"} com sucesso.`,
         severity: "success",
       });
 
-      imagesToDelete.forEach(async (imageRef) => {
-        await deleteObject(imageRef);
-      });
+      deleteImagesFromStorage(storageImagesToDelete);
     } catch (error) {
       console.error(error);
       setAlert({
@@ -89,13 +75,13 @@ export const ProductForm = (props) => {
     setIsLoading(false);
   };
 
+  // Delete image from localImages or Add image to list of images to be removed from storage
   const deleteImage = async (e, location, imageURL) => {
     e.preventDefault();
     if (!imageURL) return;
 
     if (location === "storage") {
-      const imageRef = ref(storage, imageURL);
-      setImagesToDelete((imagesToDelete) => [...imagesToDelete, imageRef]);
+      setStorageImagesToDelete((storageImagesToDelete) => [...storageImagesToDelete, imageURL]);
       setValues((values) => ({
         ...values,
         images: values.images.filter((image) => image !== imageURL),
@@ -212,11 +198,6 @@ export const ProductForm = (props) => {
               </FormControl>
             </Grid>
             <Grid item md={12} xs={12}>
-              {/* <ImageUploader
-                handleImage={handleImage}
-                images={localImage ? localImage.url : values.image}
-                deleteImage={deleteImage}
-              /> */}
               <ImageUploader
                 handleImage={handleImage}
                 localImages={localImages}

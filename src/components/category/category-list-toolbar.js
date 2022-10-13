@@ -11,7 +11,7 @@ import {
 import NextLink from "next/link";
 import { Search as SearchIcon } from "../../icons/search";
 
-export const CategoryListToolbar = (props) => (
+export const CategoryListToolbar = ({ searchCategories, ...props }) => (
   <Box {...props}>
     <Box
       sx={{
@@ -39,6 +39,7 @@ export const CategoryListToolbar = (props) => (
           <Box sx={{ maxWidth: 500 }}>
             <TextField
               fullWidth
+              onChange={searchCategories}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -48,7 +49,7 @@ export const CategoryListToolbar = (props) => (
                   </InputAdornment>
                 ),
               }}
-              placeholder="Buscar Cliente"
+              placeholder="Buscar Categoria"
               variant="outlined"
             />
           </Box>

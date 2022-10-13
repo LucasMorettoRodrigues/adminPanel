@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ProductsService } from "../services/ProductsService";
 
-export const useProducts = () => {
+export const useProductForm = () => {
   const router = useRouter();
   const { id } = router.query;
   const productsService = new ProductsService();
@@ -15,7 +15,7 @@ export const useProducts = () => {
     price: "",
     description: "",
     stock: "",
-    image: "",
+    images: [],
     category: "",
     genre: "",
     brand: "",
@@ -35,7 +35,7 @@ export const useProducts = () => {
           price: response.data.price,
           description: response.data.description,
           stock: response.data.stock,
-          images: response.data.images,
+          images: response.data.images || [],
           category: response.data.category,
           genre: response.data.genre,
           brand: response.data.brand,
