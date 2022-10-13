@@ -16,7 +16,7 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
         <img
           style={{ height: "100%", maxWidth: "280px", objectFit: "cover" }}
           alt={`${product.name} Image`}
-          src={product.image}
+          src={product.images ? product.images[0] : ""}
         />
       </div>
       <Typography align="center" color="textPrimary" gutterBottom variant="h5">

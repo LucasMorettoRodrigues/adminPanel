@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -12,102 +12,47 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { useRouter } from "next/router";
 import { ProductsService } from "../../services/ProductsService";
-import { CategoriesService } from "../../services/CategoriesService";
 import { useSetRecoilState } from "recoil";
 import { alertState } from "../../atoms/alertState";
 import { v4 as uuid } from "uuid";
 import { ImageUploader } from "../ImageUploader";
 import { storage } from "../../firebase";
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytesResumable, deleteObject } from "firebase/storage";
+import { useCategories } from "../../hooks/useCategories";
+import { useProducts } from "../../hooks/useProducts";
+import { useRouter } from "next/router";
 
 export const ProductForm = (props) => {
   const router = useRouter();
   const { id } = router.query;
   const productsService = new ProductsService();
-  const categoriesService = new CategoriesService();
   const setAlert = useSetRecoilState(alertState);
+  const { categories } = useCategories();
+  const { error, isFetchingProducts, values, setValues, handleChange } = useProducts();
 
-  const [isFetchingProduct, setIsFetchingProduct] = useState(id ? true : false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [localImage, setLocalImage] = useState(null);
-  const [categories, setCategories] = useState([]);
-
-  const [values, setValues] = useState({
-    name: "",
-    price: "",
-    description: "",
-    stock: "",
-    image: "",
-    category: "",
-    genre: "",
-    brand: "",
-  });
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await productsService.getProduct(id);
-        if (!response.data) {
-          setError("O produto não foi encontrado.");
-          return;
-        }
-
-        setValues({
-          name: response.data.name,
-          price: response.data.price,
-          description: response.data.description,
-          stock: response.data.stock,
-          image: response.data.image,
-          category: response.data.category,
-          genre: response.data.genre,
-          brand: response.data.brand,
-        });
-      } catch (error) {
-        setAlert({ message: "Não foi possível conectar com o servidor.", severity: "error" });
-        console.error(error);
-      } finally {
-        setIsFetchingProduct(false);
-      }
-    };
-
-    !!id && fetchProduct();
-  }, [id]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await categoriesService.getAll();
-        if (response.status === 200 && response.data) {
-          setCategories(Object.values(response.data));
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const [localImages, setLocalImages] = useState([]);
+  const [imagesToDelete, setImagesToDelete] = useState([]);
 
   const handleImage = async (fileUploaded) => {
-    setLocalImage({ file: fileUploaded, url: URL.createObjectURL(fileUploaded) });
-  };
-
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+    setLocalImages((localImage) => [
+      ...localImage,
+      { file: fileUploaded, url: URL.createObjectURL(fileUploaded) },
+    ]);
   };
 
   const uploadImage = async () => {
-    if (!localImage) return;
-    const storageRef = ref(storage, `products/${uuid()}`);
-    let response = await uploadBytesResumable(storageRef, localImage.file);
-    const imageURL = await getDownloadURL(response.ref);
-    return imageURL;
+    const imagesURL = [];
+
+    for (let localImage of localImages) {
+      const storageRef = ref(storage, `products/${uuid()}`);
+      let response = await uploadBytesResumable(storageRef, localImage.file);
+      const imageURL = await getDownloadURL(response.ref);
+      imagesURL.push(imageURL);
+    }
+
+    return imagesURL;
   };
 
   const updateOrAddProduct = async () => {
@@ -121,12 +66,17 @@ export const ProductForm = (props) => {
         id = uuid();
       }
 
-      const imageURL = await uploadImage();
+      const imagesURL = await uploadImage();
 
-      await productsService.put(id, { ...values, id, image: imageURL || values.image });
+      // await productsService.put(id, { ...values, id, image: imageURL || values.image });
+      await productsService.put(id, { ...values, id, images: [...values.images, ...imagesURL] });
       setAlert({
         message: `O produto foi ${action === "editar" ? "editado" : "adicionado"} com sucesso.`,
         severity: "success",
+      });
+
+      imagesToDelete.forEach(async (imageRef) => {
+        await deleteObject(imageRef);
       });
     } catch (error) {
       console.error(error);
@@ -139,7 +89,25 @@ export const ProductForm = (props) => {
     setIsLoading(false);
   };
 
-  if (isFetchingProduct) {
+  const deleteImage = async (e, location, imageURL) => {
+    e.preventDefault();
+    if (!imageURL) return;
+
+    if (location === "storage") {
+      const imageRef = ref(storage, imageURL);
+      setImagesToDelete((imagesToDelete) => [...imagesToDelete, imageRef]);
+      setValues((values) => ({
+        ...values,
+        images: values.images.filter((image) => image !== imageURL),
+      }));
+    }
+
+    if (location === "local") {
+      setLocalImages((localImages) => localImages.filter((image) => image.url !== imageURL));
+    }
+  };
+
+  if (isFetchingProducts) {
     return <>Aguarde...</>;
   }
 
@@ -244,9 +212,16 @@ export const ProductForm = (props) => {
               </FormControl>
             </Grid>
             <Grid item md={12} xs={12}>
+              {/* <ImageUploader
+                handleImage={handleImage}
+                images={localImage ? localImage.url : values.image}
+                deleteImage={deleteImage}
+              /> */}
               <ImageUploader
                 handleImage={handleImage}
-                image={localImage ? localImage.url : values.image}
+                localImages={localImages}
+                storageImages={values.images}
+                deleteImage={deleteImage}
               />
             </Grid>
           </Grid>

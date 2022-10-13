@@ -33,7 +33,8 @@ const App = (props) => {
           <CssBaseline />
           <RecoilRoot>
             <DashBoardAlert />
-            {auth.currentUser ? getLayout(<Component {...pageProps} />) : <Login />}
+            {/* {auth.currentUser ? getLayout(<Component {...pageProps} />) : <Login />} */}
+            {getLayout(<Component {...pageProps} />)}
             {/* -------------- LOGIN REMOVIDO ------------------
             <AuthProvider>
               <AuthConsumer>

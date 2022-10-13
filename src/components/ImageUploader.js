@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Button } from "@mui/material";
 
-export const ImageUploader = ({ handleImage, image }) => {
+export const ImageUploader = ({ handleImage, localImages, storageImages, deleteImage }) => {
   const hiddenFileInput = useRef(null);
 
   const handleClick = (event) => {
@@ -25,11 +25,59 @@ export const ImageUploader = ({ handleImage, image }) => {
         onChange={handleChange}
         style={{ display: "none" }}
       />
-      {image && (
-        <div style={{ width: "300px" }}>
-          <img style={{ width: "100%" }} src={image} alt="preview image" />
+      <div style={{ display: "flex" }}>
+        <div style={{ display: "flex" }}>
+          {storageImages &&
+            storageImages.length > 0 &&
+            storageImages.map((image, index) => (
+              <div
+                key={index}
+                style={{
+                  padding: "15px",
+                  border: "1px solid lightgray",
+                  borderRadius: "20px",
+                  margin: "15px",
+                }}
+              >
+                <div
+                  style={{ width: "100px", height: "100px", display: "flex", alignItems: "center" }}
+                >
+                  <img
+                    style={{ width: "100%", objectFit: "contain" }}
+                    src={image}
+                    alt="preview image"
+                  />
+                </div>
+                <button onClick={(e) => deleteImage(e, "storage", image)}>Deletar</button>
+              </div>
+            ))}
         </div>
-      )}
+        <div style={{ display: "flex" }}>
+          {localImages.length > 0 &&
+            localImages.map((image, index) => (
+              <div
+                key={index}
+                style={{
+                  padding: "15px",
+                  border: "1px solid lightgray",
+                  borderRadius: "20px",
+                  margin: "15px",
+                }}
+              >
+                <div
+                  style={{ width: "100px", height: "100px", display: "flex", alignItems: "center" }}
+                >
+                  <img
+                    style={{ width: "100%", objectFit: "contain" }}
+                    src={image.url}
+                    alt="preview image"
+                  />
+                </div>
+                <button onClick={(e) => deleteImage(e, "local", image.url)}>Deletar</button>
+              </div>
+            ))}
+        </div>
+      </div>
     </>
   );
 };
