@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Button } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 
 export const ImageUploader = ({ handleImage, localImages, storageImages, deleteImage }) => {
   const hiddenFileInput = useRef(null);
@@ -17,7 +17,7 @@ export const ImageUploader = ({ handleImage, localImages, storageImages, deleteI
   return (
     <>
       <Button onClick={handleClick} color="primary" fullWidth variant="text">
-        Escolher Imagem
+        Adicionar Imagem
       </Button>
       <input
         type="file"
@@ -35,12 +35,12 @@ export const ImageUploader = ({ handleImage, localImages, storageImages, deleteI
                 style={{
                   padding: "15px",
                   border: "1px solid lightgray",
-                  borderRadius: "20px",
+                  borderRadius: "10px",
                   margin: "15px",
                 }}
               >
                 <div
-                  style={{ width: "100px", height: "100px", display: "flex", alignItems: "center" }}
+                  style={{ width: "140px", height: "140px", display: "flex", alignItems: "center" }}
                 >
                   <img
                     style={{ width: "100%", objectFit: "contain" }}
@@ -48,7 +48,22 @@ export const ImageUploader = ({ handleImage, localImages, storageImages, deleteI
                     alt="preview image"
                   />
                 </div>
-                <button onClick={(e) => deleteImage(e, "storage", image)}>Deletar</button>
+                <Grid
+                  item
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    display: "flex",
+                    marginTop: "10px",
+                  }}
+                >
+                  <Button
+                    onClick={(e) => deleteImage(e, "storage", image)}
+                    sx={{ p: 0, color: "#D14343;" }}
+                  >
+                    Remover
+                  </Button>
+                </Grid>
               </div>
             ))}
         </div>
@@ -60,12 +75,12 @@ export const ImageUploader = ({ handleImage, localImages, storageImages, deleteI
                 style={{
                   padding: "15px",
                   border: "1px solid lightgray",
-                  borderRadius: "20px",
+                  borderRadius: "10px",
                   margin: "15px",
                 }}
               >
                 <div
-                  style={{ width: "100px", height: "100px", display: "flex", alignItems: "center" }}
+                  style={{ width: "140px", height: "140px", display: "flex", alignItems: "center" }}
                 >
                   <img
                     style={{ width: "100%", objectFit: "contain" }}
@@ -73,7 +88,22 @@ export const ImageUploader = ({ handleImage, localImages, storageImages, deleteI
                     alt="preview image"
                   />
                 </div>
-                <button onClick={(e) => deleteImage(e, "local", image.url)}>Deletar</button>
+                <Grid
+                  item
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    display: "flex",
+                    marginTop: "10px",
+                  }}
+                >
+                  <Button
+                    onClick={(e) => deleteImage(e, "local", image.url)}
+                    sx={{ p: 0, color: "#D14343;" }}
+                  >
+                    Remover
+                  </Button>
+                </Grid>
               </div>
             ))}
         </div>

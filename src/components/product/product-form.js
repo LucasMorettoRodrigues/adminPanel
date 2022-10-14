@@ -56,13 +56,16 @@ export const ProductForm = (props) => {
       }
 
       const imagesURL = await uploadImageToStorage(localImages);
-
-      await productsService.put(id, { ...values, id, images: [...values.images, ...imagesURL] });
+      await productsService.put(id, {
+        ...values,
+        id,
+        brand: values.brand.toLowerCase(),
+        images: [...values.images, ...imagesURL],
+      });
       setAlert({
         message: `O produto foi ${action === "editar" ? "editado" : "adicionado"} com sucesso.`,
         severity: "success",
       });
-
       deleteImagesFromStorage(storageImagesToDelete);
     } catch (error) {
       console.error(error);
