@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { Box, Button, Card, CardContent, Divider, Grid, Typography } from "@mui/material";
 import NextLink from "next/link";
+import { formatPrice } from "../../utils/functions";
 
 export const ProductCard = ({ product, deleteProduct, ...rest }) => (
   <Card
@@ -39,7 +40,7 @@ export const ProductCard = ({ product, deleteProduct, ...rest }) => (
         ))}
       </Typography>
       <Typography align="center" color="textPrimary" gutterBottom variant="h6">
-        R$ {product.price}
+        {formatPrice(product.price)}
       </Typography>
       <Typography align="center" color="textSecondary" variant="body2">
         Em estoque: {product.stock}

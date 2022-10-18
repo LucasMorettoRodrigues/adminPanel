@@ -22,7 +22,12 @@ import { ref, getDownloadURL, uploadBytesResumable, deleteObject } from "firebas
 import { useCategories } from "../../hooks/useCategories";
 import { useProductForm } from "../../hooks/useProductForm";
 import { useRouter } from "next/router";
-import { deleteImagesFromStorage, uploadImageToStorage } from "../../utils/functions";
+import {
+  currencyMask,
+  deleteImagesFromStorage,
+  formatPrice,
+  uploadImageToStorage,
+} from "../../utils/functions";
 
 export const ProductForm = (props) => {
   const router = useRouter();
@@ -59,6 +64,8 @@ export const ProductForm = (props) => {
       await productsService.put(id, {
         ...values,
         id,
+        price: Number(values.price.replace(".", "")),
+        stock: Number(values.stock),
         brand: values.brand.toLowerCase(),
         images: [...values.images, ...imagesURL],
       });
@@ -136,10 +143,14 @@ export const ProductForm = (props) => {
                 fullWidth
                 label="Preço do Produto em Reais"
                 name="price"
-                onChange={handleChange}
-                type="number"
+                onChange={(e) => handleChange(currencyMask(e))}
+                type="text"
                 required
-                value={values.price}
+                value={
+                  typeof values.price === "string"
+                    ? values.price
+                    : formatPrice(values.price).substring(2).replace(",", ".")
+                }
                 variant="outlined"
               />
             </Grid>

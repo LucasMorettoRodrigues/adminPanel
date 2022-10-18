@@ -1,12 +1,15 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { alertState } from "../atoms/alertState";
 import { ProductsService } from "../services/ProductsService";
+import { formatPrice } from "../utils/functions";
 
 export const useProductForm = () => {
   const router = useRouter();
   const { id } = router.query;
   const productsService = new ProductsService();
-
+  const setAlert = useSetRecoilState(alertState);
   const [isFetchingProducts, setIsFetchingProducts] = useState(id ? true : false);
   const [error, setError] = useState("");
 
