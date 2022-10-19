@@ -21,7 +21,18 @@ export default async function handler(req, res) {
 
   for (let item in body.items) {
     const product = products.find((product) => product.id === item.reference_id);
-    await productsService.update(item.reference_id, { quantity: product.stock - item.quantity });
+    console.log("Atualizando Stock do Produto: ", product.name);
+    try {
+      await productsService.update(item.reference_id, { stock: product.stock - item.quantity });
+      console.log(
+        "Stock (anterior):",
+        product.stock,
+        "Stock (atualizado):",
+        product.stock - item.quantity
+      );
+    } catch (error) {
+      console.log("Erro: Atualização interrompida.");
+    }
   }
 
   // Create Notification in Firebase
