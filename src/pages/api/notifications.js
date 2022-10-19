@@ -23,6 +23,13 @@ export default async function handler(req, res) {
 
   for (let item in body.items) {
     const product = products.find((product) => product.id === item.reference_id);
+    if (product) {
+      console.log("produto encontrado", product);
+    } else {
+      console.log("produto nao encontrado");
+      res.status(200).send();
+      return;
+    }
     console.log("Atualizando Stock do Produto: ", product.name);
     try {
       await productsService.update(item.reference_id, { stock: product.stock - item.quantity });
