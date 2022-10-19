@@ -16,7 +16,8 @@ export default async function handler(req, res) {
   // Get Products and Update Stock
   const productsService = new ProductsService();
 
-  const products = await productsService.getAll();
+  const getProductsResponse = await productsService.getAll();
+  const products = Object.values(getProductsResponse.data);
 
   for (let item in body.items) {
     const product = products.find((product) => product.id === item.reference_id);
