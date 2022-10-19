@@ -5,15 +5,16 @@ export default async function handler(req, res) {
   const body = req.body;
 
   console.log(body);
+  res.status(200).json({ body, teste: body.charges });
 
-  if (body.charges[body.charges.length - 1].status !== "PAID") {
-    res.status(200).json({ status: "success" });
-    return;
-  }
+  // if (body.charges[body.charges.length - 1].status !== "PAID") {
+  //   res.status(200).json({ status: "success" });
+  //   return;
+  // }
 
-  const notificationsService = new NotificationsService();
+  // const notificationsService = new NotificationsService();
 
-  notificationsService.put(uuid(), body);
+  // notificationsService.put(uuid(), body);
 
-  res.status(200).json({ status: "success" });
+  // res.status(200).json({ status: "success" });
 }
