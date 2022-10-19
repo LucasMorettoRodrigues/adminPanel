@@ -17,7 +17,7 @@ export class ProductsService {
   }
 
   async update(id, body) {
-    return await axios.put(`${this.apiUrl}/${id}.json`, body);
+    return await axios.patch(`${this.apiUrl}/${id}.json`, body);
   }
 
   async delete(id) {

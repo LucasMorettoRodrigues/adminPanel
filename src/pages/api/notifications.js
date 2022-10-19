@@ -19,16 +19,9 @@ export default async function handler(req, res) {
   const getProductsResponse = await productsService.getAll();
   const products = Object.values(getProductsResponse.data);
 
-  for (let item in body.items) {
-    console.log(product.id, item.reference_id);
+  for (let item of body.items) {
     const product = products.find((product) => product.id === item.reference_id);
-    if (product) {
-      console.log("produto encontrado", product);
-    } else {
-      console.log("produto nao encontrado");
-      res.status(200).send();
-      return;
-    }
+
     console.log("Atualizando Stock do Produto: ", product.name);
     try {
       await productsService.update(item.reference_id, { stock: product.stock - item.quantity });
