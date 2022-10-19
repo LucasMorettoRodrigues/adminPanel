@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 export default async function handler(req, res) {
   const body = req.body;
 
+  console.log(body);
   console.log(body.charges);
   console.log(body.charges[body.charges.length - 1].status);
 
