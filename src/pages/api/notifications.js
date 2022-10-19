@@ -12,8 +12,8 @@ export default async function handler(req, res) {
   }
 
   const notificationsService = new NotificationsService();
-  const res = await notificationsService.put(uuid(), body);
-  console.log("res: ", res);
+  const response = await notificationsService.put(uuid(), body);
+  console.log("response: ", response);
 
   res.status(200).json({ body });
 
