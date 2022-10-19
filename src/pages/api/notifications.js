@@ -20,6 +20,7 @@ export default async function handler(req, res) {
   const products = Object.values(getProductsResponse.data);
 
   for (let item in body.items) {
+    console.log(product.id, item.reference_id);
     const product = products.find((product) => product.id === item.reference_id);
     if (product) {
       console.log("produto encontrado", product);
